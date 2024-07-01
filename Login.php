@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loginnnnnnn</title>
+    <title>Loginnnnnnn SEXOOOOOOOOOO</title>
 </head>
 <body>
-    <h2>LoginPr22ueba</h2>
+    <h2>LoginPrueba</h2>
     <form action="LoginAuth.php" method="POST">
         <label for="usuario">Usuario:</label><br>
         <input type="text" id="usuario" name="usuario" required><br><br>
