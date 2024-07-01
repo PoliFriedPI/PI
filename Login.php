@@ -6,7 +6,7 @@
     <title>Login</title>
 </head>
 <body>
-    <h2>LoginPrueba</h2>
+    <h2>LoginPr22ueba</h2>
     <form action="LoginAuth.php" method="POST">
         <label for="usuario">Usuario:</label><br>
         <input type="text" id="usuario" name="usuario" required><br><br>
