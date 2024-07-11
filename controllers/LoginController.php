@@ -21,7 +21,7 @@ class LoginController {
             session_start();
             $_SESSION['user_id'] = $user['per_id'];
             $_SESSION['user_name'] = $user['per_nombre'];
-            header("Location: ./views/admindashboard.php");
+            header("Location: ../views/admindashboard.php");
         } else {
             header("Location: ./views/login.php");
         }
