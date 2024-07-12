@@ -135,7 +135,7 @@ if (!isset($_SESSION['user_id'])) {
 <body>
 <div class="sidebar">
     <div class="sidebar-inicio">
-        <img src="Assets/logo-calaca.jpg" alt="Logo">
+        <img src="/assets/logo-calaca.jpg" alt="Logo">
     </div>
     <form method="post">
         <button class="inicio-button" type="submit" name="cerrar_sesion">
@@ -144,22 +144,22 @@ if (!isset($_SESSION['user_id'])) {
     </form>
     <ul>
         <li><label>Mantenimiento</label></li>
-        <li><a href="ListarPefil.php"><img class="sidebar-icons" src="Assets/users-icon.png" alt="Icono Usuarios">Usuarios</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/combos-icon.png" alt="Icono Combos">Combos</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/productos-icon.png" alt="Icono Productos">Productos</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/categorias-icon.png" alt="Icono Categorías">Categorías</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/pedidos-icon.png" alt="Icono Pedidos">Pedidos</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/sucursales-icon.png" alt="Icono Sucursales">Sucursales</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/pagos-icon.png" alt="Icono Formas de Pago">Formas de pago</a></li>
+        <li><a href="ListarPefil.php"><img class="sidebar-icons" src="/assets/users-icon.png" alt="Icono Usuarios">Usuarios</a></li>
+        <li><a href="#"><img class="sidebar-icons" src="/assets/combos-icon.png" alt="Icono Combos">Combos</a></li>
+        <li><a href="#"><img class="sidebar-icons" src="/assets/productos-icon.png" alt="Icono Productos">Productos</a></li>
+        <li><a href="#"><img class="sidebar-icons" src="/assets/categorias-icon.png" alt="Icono Categorías">Categorías</a></li>
+        <li><a href="#"><img class="sidebar-icons" src="/assets/pedidos-icon.png" alt="Icono Pedidos">Pedidos</a></li>
+        <li><a href="#"><img class="sidebar-icons" src="/assets/sucursales-icon.png" alt="Icono Sucursales">Sucursales</a></li>
+        <li><a href="#"><img class="sidebar-icons" src="/assets/pagos-icon.png" alt="Icono Formas de Pago">Formas de pago</a></li>
     </ul>
 </div>
 <div class="content">
     <div class="header">
         <h1>¡Bienvenido!</h1>
         <div class="user-info">
-            <img src="Assets/account-icon.png" alt="User Avatar">
+            <img src="/assets/account-icon.png" alt="User Avatar">
             <h1>Bienvenido, <?php echo $_SESSION['user_name']; ?></h1>
-            <p>Esta es la página del panel de administración.</p>
+
         </div>
     </div>
 </div>
