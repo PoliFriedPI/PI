@@ -5,7 +5,7 @@
     <title>Listar Perfiles</title>
 </head>
 <body>
-<h1>Listar Perfiles</h1>
+<h1>Listar Per    hhhjufiles</h1>
 <a href="index.php?controller=perfil&action=crear">Crear Perfil</a>
 <table border="1">
     <tr>
