@@ -1,6 +1,6 @@
 <?php
 require_once './config/config.php';
-require_once './models/Perfil.php';
+require_once './models/perfil.php';
 
 class LoginController {
     private $db;
@@ -21,7 +21,7 @@ class LoginController {
             session_start();
             $_SESSION['user_id'] = $user['per_id'];
             $_SESSION['user_name'] = $user['per_nombre'];
-            header("Location: index.php?controller=perfil&action=listar");
+            header("Location: ./views/admindashboard.php");
         } else {
             header("Location: ./views/login.php");
         }
