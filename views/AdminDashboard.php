@@ -4,6 +4,34 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
+
+// Determinar qué vista incluir según el controlador y la acción
+$view = 'default'; // Vista por defecto
+
+if (isset($_GET['controller']) && isset($_GET['action'])) {
+    $controller = $_GET['controller'];
+    $action = $_GET['action'];
+
+    // Determinar qué vista mostrar
+    if ($controller === 'dashboard' && $action === 'productos') {
+        $view = 'productos';
+    } elseif ($controller === 'perfil' && $action === 'listar') {
+        $view = 'perfiles';
+    }
+}
+
+// Incluir la vista correspondiente
+switch ($view) {
+    case 'productos':
+        require_once './views/Productos/ListarProductos.php';
+        break;
+    case 'perfiles':
+        require_once './views/Perfiles/ListarPerfiles.php';
+        break;
+    default:
+        // Vista por defecto o manejo de errores
+        break;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -18,13 +46,14 @@ if (!isset($_SESSION['user_id'])) {
             background-color: #f9f9f9;
         }
 
-        .sidebar-inicio{
+        .sidebar-inicio {
             background-color: #BC2628;
             width: 250px;
             display: flex;
             align-content: center;
             justify-content: center;
         }
+
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -37,6 +66,7 @@ if (!isset($_SESSION['user_id'])) {
             flex-direction: column;
             align-items: center;
         }
+
         .sidebar img {
             width: 70px;
             height: 70px;
@@ -44,6 +74,7 @@ if (!isset($_SESSION['user_id'])) {
             margin-top: 10px;
             border-radius: 50px;
         }
+
         .sidebar .inicio-button {
             text-decoration: none;
             color: white;
@@ -56,11 +87,13 @@ if (!isset($_SESSION['user_id'])) {
             margin-top: 20px;
             cursor: pointer;
         }
+
         .sidebar ul {
             list-style: none;
             padding: 0;
             width: 100%;
         }
+
         .sidebar ul li {
             width: 70%;
             padding: 10px 38px;
@@ -70,9 +103,11 @@ if (!isset($_SESSION['user_id'])) {
             display: flex;
             align-items: center;
         }
+
         .sidebar ul li:first-child {
             border-top: none;
         }
+
         .sidebar ul li a {
             text-decoration: none;
             color: #333;
@@ -82,7 +117,7 @@ if (!isset($_SESSION['user_id'])) {
             align-items: center;
         }
 
-        .sidebar ul li label{
+        .sidebar ul li label {
             text-decoration: none;
             color: #BC2628;
             width: 100%;
@@ -93,10 +128,10 @@ if (!isset($_SESSION['user_id'])) {
 
         .sidebar ul li a img {
             margin-right: 10px;
-            height:22px;
+            height: 22px;
             width: 22px;
-
         }
+
         .sidebar ul li:hover {
             background-color: #eaeaea;
         }
@@ -105,6 +140,7 @@ if (!isset($_SESSION['user_id'])) {
             margin-left: 250px;
             padding: 20px;
         }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -113,20 +149,24 @@ if (!isset($_SESSION['user_id'])) {
             padding: 10px 20px;
             border-bottom: 1px solid #ddd;
         }
+
         .header h1 {
             margin: 0;
             font-size: 37px;
         }
+
         .header .user-info {
             display: flex;
             align-items: center;
         }
+
         .header .user-info img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             margin-right: 10px;
         }
+
         .header .user-info span {
             font-size: 18px;
         }
@@ -137,19 +177,19 @@ if (!isset($_SESSION['user_id'])) {
     <div class="sidebar-inicio">
         <img src="Assets/logo-calaca.jpg" alt="Logo">
     </div>
-    <form method="post">
+    <form method="post" action="logout.php">
         <button class="inicio-button" type="submit" name="cerrar_sesion">
-            <a href="logout.php">Logout</a>
+            Logout
         </button>
     </form>
     <ul>
         <li><label>Mantenimiento</label></li>
-        <li><a href="ListarPefil.php"><img class="sidebar-icons" src="Assets/users-icon.png" alt="Icono Usuarios">Perfiles</a></li>
+        <li><a href="index.php?controller=perfil&action=listar"><img class="sidebar-icons" src="Assets/users-icon.png" alt="Icono Usuarios">Perfiles</a></li>
+        <li><a href="index.php?controller=producto&action=listar"><img class="sidebar-icons" src="Assets/productos-icon.png" alt="Icono Productos">Productos</a></li>
         <li><a href="#"><img class="sidebar-icons" src="Assets/combos-icon.png" alt="Icono Combos">Combos</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/productos-icon.png" alt="Icono Productos">Productos</a></li>
         <li><a href="#"><img class="sidebar-icons" src="Assets/categorias-icon.png" alt="Icono Categorías">Categorías</a></li>
         <li><a href="#"><img class="sidebar-icons" src="Assets/pedidos-icon.png" alt="Icono Pedidos">Pedidos</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/sucursales-icon.png" alt="Icono Sucursales">Sucursales</a></li>
+        <li><a href="index.php?controller=sucursal&action=listar"><img class="sidebar-icons" src="Assets/sucursales-icon.png" alt="Icono Sucursales">Sucursales</a></li>
         <li><a href="#"><img class="sidebar-icons" src="Assets/pagos-icon.png" alt="Icono Formas de Pago">Formas de pago</a></li>
     </ul>
 </div>
@@ -162,6 +202,17 @@ if (!isset($_SESSION['user_id'])) {
             <p>Esta es la página del panel de administración.</p>
         </div>
     </div>
+
+    <!-- Aquí se mostrará la lista de Productos si estamos en la página de Productos -->
+    <?php if (isset($_GET['controller']) && $_GET['controller'] === 'dashboard' && isset($_GET['action']) && $_GET['action'] === 'productos') : ?>
+        <?php require_once './views/Productos/ListarProducto.php'; ?>
+    <?php endif; ?>
+
+    <!-- Mostrar lista de Perfiles si la acción es 'listar' en el controlador 'perfil' -->
+    <?php if (isset($_GET['controller']) && $_GET['controller'] === 'perfil' && isset($_GET['action']) && $_GET['action'] === 'listar') : ?>
+        <?php require_once './views/Perfil/ListarPerfil.php'; ?>
+    <?php endif; ?>
+
 </div>
 </body>
 </html>

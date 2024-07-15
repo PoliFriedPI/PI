@@ -11,33 +11,39 @@ class PerfilController {
     }
 
     public function listar() {
-        $stmt = $this->db->prepare("SELECT * FROM tbl_perfil WHERE per_estado = 1");
-        $stmt->execute();
+        $stmt = $this->db->query("SELECT * FROM tbl_perfil WHERE per_estado != 'I'");
         $perfiles = $stmt->fetchAll(PDO::FETCH_ASSOC);
         require_once './views/Perfil/ListarPerfil.php';
     }
 
+
     public function crear() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nombre = $_POST['nombre'];
-            $apellido = $_POST['apellido'];
             $email = $_POST['email'];
             $password = $_POST['password'];
-            $rol_id = $_POST['rol_id'];
+            $estado = 'N'; // Estado inicial 'N' de nuevo
 
-            $stmt = $this->db->prepare("INSERT INTO tbl_perfil (per_nombre, per_apellido, per_email, per_password, per_estado, rol_id) VALUES (:nombre, :apellido, :email, :password, 1, :rol_id)");
-            $stmt->bindParam(':nombre', $nombre);
-            $stmt->bindParam(':apellido', $apellido);
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':password', $password);
-            $stmt->bindParam(':rol_id', $rol_id);
-            $stmt->execute();
+            // Crear un nuevo perfil
+            $perfil = new Perfil(null, $nombre, '', $email, $password, $estado, null);
+            $perfil->crearPerfil($nombre, $email, $password, $estado);
 
-            header("Location: index.php?controller=perfil&action=listar");
+            // Verificar el estado del perfil creado
+            if ($estado == 'N') {
+                // Redirigir al usuario a la página de cambio de contraseña
+                header("Location: index.php?controller=login&action=cambiarContrasena");
+                exit();
+            } else {
+                // Redirigir al dashboard u otra página según tu aplicación
+                header("Location: index.php?controller=dashboard&action=index");
+                exit();
+            }
         } else {
-            require_once './views/Perfil/CrearPerfil.php';
+            include 'views/Perfil/CrearPerfil.php';
         }
     }
+
+
 
     public function editar() {
         $id = $_GET['id'];
@@ -67,13 +73,12 @@ class PerfilController {
         }
     }
 
-    public function eliminar() {
-        $id = $_GET['id'];
-        $stmt = $this->db->prepare("UPDATE tbl_perfil SET per_estado = 0 WHERE per_id = :id");
+    public function eliminar($id) {
+        $stmt = $this->db->prepare("UPDATE tbl_perfil SET per_estado = 'I' WHERE per_id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-
         header("Location: index.php?controller=perfil&action=listar");
     }
 }
 ?>
+

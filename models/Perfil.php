@@ -1,6 +1,6 @@
 <?php
 
-class perfil {
+class Perfil {
 
     private $per_id;
     private $per_nombre;
@@ -91,5 +91,29 @@ class perfil {
         }
     }
 
+    public function obtenerPerfiles() {
+        $stmt = $this->db->query("SELECT * FROM tbl_perfil WHERE per_estado != 'I'");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function crearPerfil($nombre, $email, $password, $estado) {
+        global $conexion;
+        $stmt = $conexion->prepare("INSERT INTO tbl_perfil (per_nombre, per_email, per_password, per_estado) VALUES (:nombre, :email, :password, :estado)");
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':estado', $estado);
+        return $stmt->execute();
+    }
+
+    public function cambiarEstadoPerfil($id, $estado) {
+        $stmt = $this->db->prepare("UPDATE tbl_perfil SET per_estado = :estado WHERE per_id = :id");
+        $stmt->bindParam(':estado', $estado);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
 }
 ?>
+
+
