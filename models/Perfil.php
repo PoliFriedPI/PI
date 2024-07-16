@@ -96,15 +96,18 @@ class Perfil {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function crearPerfil($nombre, $email, $password, $estado) {
+    public function crearPerfil($nombre, $apellido, $email, $password, $estado, $rol_id) {
         global $conexion;
-        $stmt = $conexion->prepare("INSERT INTO tbl_perfil (per_nombre, per_email, per_password, per_estado) VALUES (:nombre, :email, :password, :estado)");
+        $stmt = $conexion->prepare("INSERT INTO tbl_perfil (per_nombre, per_apellido, per_email, per_password, per_estado, rol_id) VALUES (:nombre, :apellido, :email, :password, :estado, :rol_id)");
         $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':apellido', $apellido);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
         $stmt->bindParam(':estado', $estado);
+        $stmt->bindParam(':rol_id', $rol_id);
         return $stmt->execute();
     }
+
 
     public function cambiarEstadoPerfil($id, $estado) {
         $stmt = $this->db->prepare("UPDATE tbl_perfil SET per_estado = :estado WHERE per_id = :id");

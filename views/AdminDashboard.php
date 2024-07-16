@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
+
 
 // Determinar qué vista incluir según el controlador y la acción
 $view = 'default'; // Vista por defecto
@@ -186,11 +182,9 @@ switch ($view) {
         <li><label>Mantenimiento</label></li>
         <li><a href="index.php?controller=perfil&action=listar"><img class="sidebar-icons" src="Assets/users-icon.png" alt="Icono Usuarios">Perfiles</a></li>
         <li><a href="index.php?controller=producto&action=listar"><img class="sidebar-icons" src="Assets/productos-icon.png" alt="Icono Productos">Productos</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/combos-icon.png" alt="Icono Combos">Combos</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/categorias-icon.png" alt="Icono Categorías">Categorías</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/pedidos-icon.png" alt="Icono Pedidos">Pedidos</a></li>
+        <li><a href="index.php?controller=combo&action=listar_combos"><img class="sidebar-icons" src="Assets/combos-icon.png" alt="Icono Combos">Combos</a></li>
+        <li><a href="index.php?controller=categoria&action=listar_categorias"><img class="sidebar-icons" src="Assets/categorias-icon.png" alt="Icono Categorías">Categorías</a></li>
         <li><a href="index.php?controller=sucursal&action=listar"><img class="sidebar-icons" src="Assets/sucursales-icon.png" alt="Icono Sucursales">Sucursales</a></li>
-        <li><a href="#"><img class="sidebar-icons" src="Assets/pagos-icon.png" alt="Icono Formas de Pago">Formas de pago</a></li>
     </ul>
 </div>
 <div class="content">

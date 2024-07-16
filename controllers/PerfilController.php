@@ -20,28 +20,24 @@ class PerfilController {
     public function crear() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nombre = $_POST['nombre'];
+            $apellido = $_POST['apellido'];
             $email = $_POST['email'];
             $password = $_POST['password'];
             $estado = 'N'; // Estado inicial 'N' de nuevo
+            $rol_id = $_POST['rol_id']; // Asumiendo que el rol_id se pasa desde el formulario
 
             // Crear un nuevo perfil
-            $perfil = new Perfil(null, $nombre, '', $email, $password, $estado, null);
-            $perfil->crearPerfil($nombre, $email, $password, $estado);
+            $perfil = new Perfil(null, $nombre, $apellido, $email, password_hash($password, PASSWORD_DEFAULT), $estado, $rol_id);
+            $perfil->crearPerfil($nombre, $apellido, $email, password_hash($password, PASSWORD_DEFAULT), $estado, $rol_id);
 
-            // Verificar el estado del perfil creado
-            if ($estado == 'N') {
-                // Redirigir al usuario a la página de cambio de contraseña
-                header("Location: index.php?controller=login&action=cambiarContrasena");
-                exit();
-            } else {
-                // Redirigir al dashboard u otra página según tu aplicación
-                header("Location: index.php?controller=dashboard&action=index");
-                exit();
-            }
+            // Redirigir a la lista de perfiles
+            header("Location: index.php?controller=perfil&action=listar");
+            exit();
         } else {
             include 'views/Perfil/CrearPerfil.php';
         }
     }
+
 
 
 

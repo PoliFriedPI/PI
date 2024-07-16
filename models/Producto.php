@@ -26,6 +26,15 @@ class Producto {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function obtenerProductoPorId($prod_id) {
+        $sql = "SELECT * FROM tbl_producto WHERE prod_id = :prod_id";
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->bindParam(':prod_id', $prod_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public function editar($id, $nombre, $precio, $extra, $imagen, $estado) {
         $sql = "UPDATE tbl_producto SET prod_nombre = :nombre, prod_precio = :precio, prod_extra = :extra, 
                 prod_image = :imagen, prod_estado = :estado WHERE prod_id = :id";

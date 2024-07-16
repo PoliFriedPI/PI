@@ -2,8 +2,10 @@
 require_once 'config/config.php';
 require_once 'controllers/LoginController.php';
 require_once 'controllers/PerfilController.php';
-require_once 'controllers/SucursalController.php';
 require_once 'controllers/ProductoController.php';
+require_once 'controllers/ComboController.php'; // Añadimos ComboController
+require_once 'controllers/CategoriaController.php'; // Añadimos CategoriaController
+require_once 'controllers/SucursalController.php'; // Añadimos SucursalController
 
 class DashboardController {
     public function index() {
@@ -11,17 +13,21 @@ class DashboardController {
     }
 }
 
+// Iniciar sesión
+session_start();
+
 $controller = isset($_GET['controller']) ? $_GET['controller'] : 'login';
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';
+$id = isset($_GET['id']) ? $_GET['id'] : null;
 
 switch ($controller) {
     case 'login':
         $loginController = new LoginController();
-        if ($action == 'login') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action == 'login') {
             $email = $_POST['email'];
             $password = $_POST['password'];
             $loginController->login($email, $password);
-        } elseif ($action == 'changePassword') {
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $action == 'changePassword') {
             $newPassword = $_POST['new_password'];
             $loginController->changePassword($newPassword);
         } elseif ($action == 'cambiarContrasena') {
@@ -88,32 +94,84 @@ switch ($controller) {
                 break;
         }
         break;
-    case 'sucursal':
+    case 'sucursal': // Añadimos el caso para el SucursalController
         $sucursalController = new SucursalController();
         switch ($action) {
             case 'listar':
                 $sucursalController->listar();
                 break;
-            case 'crear':
-                $sucursalController->crear();
+            case 'agregar':
+                $sucursalController->agregar();
                 break;
             case 'guardar':
-                $sucursalController->guardar($_POST);
+                $sucursalController->guardar();
                 break;
             case 'editar':
-                $id = $_GET['id'];
+                $id = isset($_GET['id']) ? $_GET['id'] : die('Error: ID no especificado.');
                 $sucursalController->editar($id);
                 break;
-            case 'actualizar':
-                $id = $_GET['id'];
-                $sucursalController->actualizar($id, $_POST);
-                break;
             case 'eliminar':
-                $id = $_GET['id'];
+                $id = isset($_GET['id']) ? $_GET['id'] : die('Error: ID no especificado.');
                 $sucursalController->eliminar($id);
                 break;
             default:
-                $sucursalController->listar();
+                die('Acción no válida.');
+                break;
+        }
+        break;
+    case 'combo': // Añadimos el caso para el ComboController
+        $comboController = new ComboController();
+        switch ($action) {
+            case 'listar_combos':
+                $comboController->listar_combos();
+                break;
+            case 'agregar_combo':
+                $comboController->agregar_combo();
+                break;
+            case 'editar_combo':
+                if ($id) {
+                    $comboController->editar_combo($id);
+                } else {
+                    header('Location:index.php?controller=combo&action=listar_combos');
+                }
+                break;
+            case 'eliminarLogico_combo':
+                if ($id) {
+                    $comboController->eliminarLogico_combo($id);
+                } else {
+                    header('Location:index.php?controller=combo&action=listar_combos');
+                }
+                break;
+            default:
+                header('Location: index.php?controller=combo&action=listar_combos');
+                break;
+        }
+        break;
+    case 'categoria':
+        $categoriaController = new CategoriaController();
+        switch ($action) {
+            case 'listar_categorias':
+                $categoriaController->listar_categorias();
+                break;
+            case 'agregar_categoria':
+                $categoriaController->agregar_categoria();
+                break;
+            case 'editar_categoria':
+                if ($id) {
+                    $categoriaController->editar_categoria($id);
+                } else {
+                    header('Location: index.php?controller=categoria&action=listar_categorias');
+                }
+                break;
+            case 'eliminarLogico_categoria':
+                if ($id) {
+                    $categoriaController->eliminarLogico_categoria($id);
+                } else {
+                    header('Location: index.php?controller=categoria&action=listar_categorias');
+                }
+                break;
+            default:
+                header('Location: index.php?controller=categoria&action=listar_categorias');
                 break;
         }
         break;

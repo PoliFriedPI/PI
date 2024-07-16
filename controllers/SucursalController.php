@@ -1,103 +1,87 @@
 <?php
 require_once 'models/Sucursal.php';
+require_once 'models/Producto.php';
+require_once 'config/config.php';
 
 class SucursalController {
-    public function listar() {
-        try {
-            $sucursales = Sucursal::getAll(); // Método estático para obtener todas las sucursales
-            require_once './views/Sucursales/ListarSucursales.php';
-        } catch (PDOException $ex) {
-            echo "Error al obtener la lista de sucursales: " . $ex->getMessage();
-        }
+    private $sucursalmodel;
+    private $productomodel;
+
+    public function __construct() {
+        global $conexion;
+        $this->sucursalmodel = new Sucursal($conexion);
+        $this->productomodel = new Producto($conexion);
     }
 
-    public function crear() {
-        // Mostrar formulario de creación de sucursal (CrearSucursal.php)
-        require_once './views/Sucursales/CrearSucursal.php';
-    }
+    public function agregar() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Procesar la creación de la sucursal
+            $nombre = $_POST['nombre'];
+            $direccion = $_POST['direccion'];
+            $prod_id = $_POST['prod_id'];
+            $suc_stock = $_POST['suc_stock'];
+            $suc_estado = 'A'; // Opcional, dependiendo de cómo manejes el estado
 
-    public function guardar($datos) {
-        try {
-            // Validar datos
-            if (!isset($datos['nombre']) || empty($datos['nombre']) ||
-                !isset($datos['direccion']) || empty($datos['direccion'])) {
-                throw new Exception("Nombre y dirección son campos obligatorios.");
+            // Obtener datos del producto
+            $producto = $this->productomodel->obtenerProductoPorId($prod_id);
+
+            if ($producto) {
+                $prod_image = $producto['prod_image'];
+                $prod_extra = $producto['prod_extra'];
+                $prod_precio = $producto['prod_precio'];
+
+                // Agregar la sucursal con los datos obtenidos del producto
+                $this->sucursalmodel->agregar($nombre, $direccion, $prod_id, $suc_stock, $suc_estado);
+
+                header('Location: index.php?controller=sucursal&action=listar');
+            } else {
+                // Manejo de error si no se encuentra el producto
+                echo "Error: El producto no existe.";
             }
+        } else {
+            // Obtener productos activos para mostrar en el formulario de creación de sucursal
+            $productos = $this->productomodel->listar();
+            // Puedes seleccionar un producto por defecto o manejar la lógica según tu necesidad
+            $producto = $productos[0]; // Ejemplo: seleccionar el primer producto de la lista
 
-            // Crear instancia de Sucursal y guardar en la base de datos
-            $sucursal = new Sucursal();
-            $sucursal->setNombre($datos['nombre']);
-            $sucursal->setDireccion($datos['direccion']);
-            // Asignar otros campos según sea necesario
-
-            $sucursal->guardar(); // Método guardar() debería estar definido en el modelo Sucursal
-
-            // Redirigir o mostrar mensaje de éxito
-            header("Location: index.php?controller=sucursal&action=listar");
-            exit();
-        } catch (Exception $ex) {
-            // Manejar el error (mostrar mensaje de error, redirigir a formulario de nuevo, etc.)
-            echo "Error al guardar la sucursal: " . $ex->getMessage();
+            require 'views/Sucursales/CrearSucursal.php'; // Pasar los productos a la vista
         }
     }
+
 
     public function editar($id) {
-        try {
-            $sucursal = Sucursal::getById($id); // Método estático para obtener sucursal por ID
-            if (!$sucursal) {
-                throw new Exception("La sucursal no existe.");
-            }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Procesar la edición de la sucursal
+            $nombre = $_POST['nombre'];
+            $direccion = $_POST['direccion'];
+            $prod_id = $_POST['prod_id'];
+            $suc_stock = $_POST['suc_stock'];
+            $suc_estado = 'A'; // Opcional, dependiendo de cómo manejes el estado
 
-            // Mostrar formulario de edición de sucursal (EditarSucursal.php)
-            require_once './views/Sucursales/EditarSucursal.php';
-        } catch (Exception $ex) {
-            echo "Error al editar la sucursal: " . $ex->getMessage();
+            // Actualizar la sucursal en la base de datos
+            $this->sucursalmodel->editar($id, $nombre, $direccion, $prod_id, $suc_stock, $suc_estado);
+            header('Location: index.php?controller=sucursal&action=listar');
+        } else {
+            // Obtener la sucursal por ID para editar
+            $sucursal = $this->sucursalmodel->obtenerPorId($id);
+
+            // Obtener el nombre del producto asociado a la sucursal
+            $producto = $this->productomodel->obtenerPorId($sucursal['prod_id']);
+            $prod_nombre = $producto['prod_nombre'];
+
+            require 'views/Sucursales/EditarSucursal.php'; // Pasar los datos del producto a la vista
         }
     }
 
-    public function actualizar($id, $datos) {
-        try {
-            // Validar datos
-            if (!isset($datos['nombre']) || empty($datos['nombre']) ||
-                !isset($datos['direccion']) || empty($datos['direccion'])) {
-                throw new Exception("Nombre y dirección son campos obligatorios.");
-            }
-
-            // Crear instancia de Sucursal y actualizar en la base de datos
-            $sucursal = new Sucursal();
-            $sucursal->setId($id);
-            $sucursal->setNombre($datos['nombre']);
-            $sucursal->setDireccion($datos['direccion']);
-            // Asignar otros campos según sea necesario
-
-            $sucursal->actualizar(); // Método actualizar() debería estar definido en el modelo Sucursal
-
-            // Redirigir o mostrar mensaje de éxito
-            header("Location: index.php?controller=sucursal&action=listar");
-            exit();
-        } catch (Exception $ex) {
-            // Manejar el error (mostrar mensaje de error, redirigir a formulario de nuevo, etc.)
-            echo "Error al actualizar la sucursal: " . $ex->getMessage();
-        }
+    public function listar() {
+        $sucursales = $this->sucursalmodel->listar();
+        require 'views/Sucursales/ListarSucursal.php';
     }
 
     public function eliminar($id) {
-        try {
-            $sucursal = Sucursal::getById($id); // Obtener la sucursal por ID
-            if (!$sucursal) {
-                throw new Exception("La sucursal no existe.");
-            }
-
-            // Cambiar estado de la sucursal a inactivo (soft delete)
-            $sucursal->eliminar(); // Método eliminar() debería desactivar la sucursal en la base de datos
-
-            // Redirigir o mostrar mensaje de éxito
-            header("Location: index.php?controller=sucursal&action=listar");
-            exit();
-        } catch (Exception $ex) {
-            // Manejar el error (mostrar mensaje de error, redirigir a página de listado, etc.)
-            echo "Error al eliminar la sucursal: " . $ex->getMessage();
-        }
+        $this->sucursalmodel->eliminar($id);
+        header('Location: index.php?controller=sucursal&action=listar');
     }
+
 }
 ?>
